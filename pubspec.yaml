@@ -1,0 +1,37 @@
+name: splitmates
+description: App de suivi de compte partagé
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.0.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 🔥 Firebase
+  firebase_core: ^2.32.0
+  firebase_auth: ^4.17.0
+  cloud_firestore: ^4.15.0
+
+  # 🧠 State management
+  provider: ^6.1.2
+
+  # 📅 Format date
+  intl: ^0.19.0
+
+  # 📊 Graphiques (important pour ton histogramme)
+  fl_chart: ^1.2.0
+
+  cupertino_icons: ^1.0.6
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
