@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = com.example.splitmates
+    namespace = "com.example.splitmates"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
