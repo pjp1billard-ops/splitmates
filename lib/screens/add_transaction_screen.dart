@@ -4,26 +4,22 @@ class AddTransactionScreen extends StatefulWidget {
   const AddTransactionScreen({super.key});
 
   @override
-  State<AddTransactionScreen> createState() =>
-      _AddTransactionScreenState();
+  State<AddTransactionScreen> createState() => _AddTransactionScreenState();
 }
-final List<String> categories = [
-  "Courses",
-  "Restaurant",
-  "Transport",
-  "Loisirs",
-];
-class _AddTransactionScreenState
-    extends State<AddTransactionScreen> {
-      final List<String> categories = [
-  "Courses",
-  "Restaurant",
-  "Transport",
-  "Loisirs",
-];
-  final titleController = TextEditingController();
-  final amountController = TextEditingController();
-String selectedCategory = "Courses";
+
+class _AddTransactionScreenState extends State<AddTransactionScreen> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController amountController = TextEditingController();
+
+  final List<String> categories = [
+    "Courses",
+    "Restaurant",
+    "Transport",
+    "Loisirs",
+  ];
+
+  String selectedCategory = "Courses";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,23 +36,6 @@ String selectedCategory = "Courses";
                 labelText: "Titre",
               ),
             ),
-            DropdownButtonFormField<String>(
-  value: selectedCategory,
-  items: categories.map((cat) {
-    return DropdownMenuItem(
-      value: cat,
-      child: Text(cat),
-    );
-  }).toList(),
-  onChanged: (value) {
-    setState(() {
-      selectedCategory = value!;
-    });
-  },
-  decoration: const InputDecoration(
-    labelText: "Catégorie",
-  ),
-),
             TextField(
               controller: amountController,
               keyboardType: TextInputType.number,
@@ -64,18 +43,38 @@ String selectedCategory = "Courses";
                 labelText: "Montant",
               ),
             ),
+            DropdownButtonFormField<String>(
+              value: selectedCategory,
+              items: categories.map((cat) {
+                return DropdownMenuItem<String>(
+                  value: cat,
+                  child: Text(cat),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value!;
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: "Catégorie",
+              ),
+            ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () async {
-  await FirestoreService().addTransaction(
-    title: titleController.text,
-    amount: double.parse(amountController.text),
-    category: selectedCategory,
-    user: "Jean-Pierre",
-  );
+              onPressed: () {
+                final amount = double.tryParse(amountController.text);
+                if (titleController.text.isEmpty || amount == null) {
+                  return;
+                }
 
-  Navigator.pop(context);
-},
+                Navigator.pop(context, {
+                  'title': titleController.text,
+                  'amount': amount,
+                  'category': selectedCategory,
+                });
+              },
+              child: const Text("Ajouter"),
             ),
           ],
         ),

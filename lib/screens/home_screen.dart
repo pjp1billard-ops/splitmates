@@ -1,8 +1,8 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import '../services/firestore_service.dart';
-import 'add_transaction_screen.dart';
+import '../models/transaction_model.dart';
 import '../widgets/chart_widget.dart';
+import '../widgets/pie_chart_widget.dart';
+import 'add_transaction_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -12,34 +12,29 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<TransactionModel> transactions = [];
+  final List<TransactionModel> transactions = [];
 
- void addTransaction(
-  String title,
-  double amount,
-  String category,
-) {
-  setState(() {
-    transactions.add(
-      TransactionModel(
-        title: title,
-        amount: amount,
-        user: "Jean-Pierre",
-        category: category, // 🔥
-      ),
-    );
-  });
-}
+  void addTransaction(String title, double amount, String category) {
+    setState(() {
+      transactions.add(
+        TransactionModel(
+          title: title,
+          amount: amount,
+          user: "Jean-Pierre",
+          category: category,
+        ),
+      );
+    });
+  }
 
   void toggleTransaction(int index) {
     setState(() {
-      transactions[index].isReconciled =
-          !transactions[index].isReconciled;
+      transactions[index].isReconciled = !transactions[index].isReconciled;
     });
   }
 
   double get total {
-    return transactions.fold(0, (sum, tx) => sum + tx.amount);
+    return transactions.fold(0.0, (sum, tx) => sum + tx.amount);
   }
 
   @override
@@ -51,8 +46,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          // 💜 HEADER
-          ChartWidget(transactions: transactions),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(24),
@@ -84,50 +77,70 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
+          const SizedBox(height: 12),
+          ChartWidget(transactions: transactions),
+          const SizedBox(height: 12),
+          PieChartWidget(transactions: transactions),
+          const SizedBox(height: 12),
+          Expanded(
+            child: ListView.builder(
+              itemCount: transactions.length,
+              itemBuilder: (context, index) {
+                final tx = transactions[index];
 
-          // 🧾 LISTE
- Expanded(
-  child: StreamBuilder<QuerySnapshot>(
-    stream: FirestoreService().getTransactions(),
-    builder: (context, snapshot) {
-      if (!snapshot.hasData) {
-        return const Center(child: CircularProgressIndicator());
-      }
-
-      final docs = snapshot.data!.docs;
-
-      return ListView.builder(
-        itemCount: docs.length,
-        itemBuilder: (context, index) {
-          final tx = docs[index];
-
-          return ListTile(
-            title: Text(tx['title']),
-            subtitle:
-                Text("${tx['user']} • ${tx['category']}"),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text("${tx['amount']} €"),
-                Checkbox(
-                  value: tx['isReconciled'],
-                  onChanged: (val) {
-                    FirestoreService()
-                        .toggle(tx.id, val!);
-                  },
-                ),
-              ],
+                return Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(20),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.05),
+                        blurRadius: 10,
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            tx.title,
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            "${tx.user} • ${tx.category}",
+                            style: const TextStyle(color: Colors.grey),
+                          ),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          Text(
+                            "${tx.amount.toStringAsFixed(2)} €",
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          Checkbox(
+                            value: tx.isReconciled,
+                            onChanged: (_) => toggleTransaction(index),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                );
+              },
             ),
-          );
-        },
-      );
-    },
-  ),
-)
+          ),
         ],
       ),
-
-      // ➕ BOUTON
       floatingActionButton: FloatingActionButton(
         backgroundColor: Colors.deepPurple,
         child: const Icon(Icons.add, color: Colors.white),
@@ -135,17 +148,16 @@ class _HomeScreenState extends State<HomeScreen> {
           final result = await Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (_) =>
-                  const AddTransactionScreen(),
+              builder: (_) => const AddTransactionScreen(),
             ),
           );
 
           if (result != null) {
-       addTransaction(
-  result['title'],
-  result['amount'],
-  result['category'],
-);
+            addTransaction(
+              result['title'],
+              result['amount'],
+              result['category'],
+            );
           }
         },
       ),
