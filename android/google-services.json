@@ -1,6 +1,7 @@
 {
   "project_info": {
     "project_number": "700994837192",
+    "firebase_url": "https://splitmates-d88fd-default-rtdb.europe-west1.firebasedatabase.app",
     "project_id": "splitmates-d88fd",
     "storage_bucket": "splitmates-d88fd.firebasestorage.app"
   },
@@ -10,6 +11,25 @@
         "mobilesdk_app_id": "1:700994837192:android:56518e32a0a869990963fd",
         "android_client_info": {
           "package_name": "com.example.flutter_application_1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCFsOrxjTAGp0DeV95gMmF3YRRMLfmEJSk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700994837192:android:56c7eee6fd07fbd10963fd",
+        "android_client_info": {
+          "package_name": "com.example.splitmates"
         }
       },
       "oauth_client": [],
