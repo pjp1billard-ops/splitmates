@@ -30,7 +30,7 @@ jobs:
       - name: Pub get
         run: flutter pub get
 
-      - name: Build APK (debug pour commencer)
+      - name: Build APK debug
         run: flutter build apk --debug
 
       - name: Upload APK
