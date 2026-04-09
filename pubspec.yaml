@@ -10,52 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
-  # 🔥 Firebase
-  firebase_core: ^2.32.0
-  firebase_auth: ^4.17.0
-  cloud_firestore: ^4.15.0
-
-  # 🧠 State management
-  provider: ^6.1.2
-
-  # 📅 Format date
-  intl: ^0.19.0
-
-  # 📊 Graphiques (important pour ton histogramme)
-  fl_chart: ^1.2.0
-
-  cupertino_icons: ^1.0.6
+  cupertino_icons: ^1.0.8
+  fl_chart: ^0.66.2
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-  flutter_lints: ^3.0.0
+  flutter_lints: ^5.0.0
 
 flutter:
   uses-material-design: true
- name: Build APK
-
-on:
-  push:
-    branches: [ main ]
-
-jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - uses: actions/checkout@v3
-
-      - uses: subosito/flutter-action@v2
-        with:
-          flutter-version: 'stable'
-
-      - run: flutter pub get
-      - run: flutter build apk --release
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: app-release
-          path: build/app/outputs/flutter-apk/app-release.apk
